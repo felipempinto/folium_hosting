@@ -1,19 +1,28 @@
 import folium
+import requests
+import pandas
 
-m = folium.Map([45.35, -121.6972], zoom_start=12)
+state_geo = requests.get(
+    "https://raw.githubusercontent.com/python-visualization/folium-example-data/main/us_states.json"
+).json()
+state_data = pandas.read_csv(
+    "https://raw.githubusercontent.com/python-visualization/folium-example-data/main/us_unemployment_oct_2012.csv"
+)
 
-folium.Marker(
-    location=[45.3288, -121.6625],
-    tooltip="Click me!",
-    popup="Mt. Hood Meadows",
-    icon=folium.Icon(icon="cloud"),
+m = folium.Map(location=[48, -102], zoom_start=3)
+
+folium.Choropleth(
+    geo_data=state_geo,
+    name="choropleth",
+    data=state_data,
+    columns=["State", "Unemployment"],
+    key_on="feature.id",
+    fill_color="YlGn",
+    fill_opacity=0.7,
+    line_opacity=0.2,
+    legend_name="Unemployment Rate (%)",
 ).add_to(m)
 
-folium.Marker(
-    location=[45.3311, -121.7113],
-    tooltip="Click me!",
-    popup="Timberline Lodge",
-    icon=folium.Icon(color="green"),
-).add_to(m)
+folium.LayerControl().add_to(m)
 
 m.save("docs/index.html")
