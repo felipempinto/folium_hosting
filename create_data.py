@@ -16,4 +16,4 @@ folium.Marker(
     icon=folium.Icon(color="green"),
 ).add_to(m)
 
-m.save("html/index.html")
+m.save("docs/index.html")
